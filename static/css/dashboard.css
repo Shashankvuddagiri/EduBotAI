@@ -1,0 +1,484 @@
+/* Variables */
+:root {
+    --primary-color: #4A90E2;
+    --primary-dark: #357ABD;
+    --secondary-color: #2ECC71;
+    --accent-color: #F1C40F;
+    --danger-color: #E74C3C;
+    --text-primary: #2C3E50;
+    --text-secondary: #7F8C8D;
+    --bg-primary: #FFFFFF;
+    --bg-secondary: #F8FAFC;
+    --bg-dark: #2C3E50;
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+    --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+    --border-radius: 0.5rem;
+    --transition: all 0.3s ease;
+}
+
+/* Reset & Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+    line-height: 1.6;
+}
+
+/* Dashboard Layout */
+.sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    padding: 48px 0 0;
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+    background-color: var(--bg-primary);
+}
+
+.sidebar-sticky {
+    position: relative;
+    top: 0;
+    height: calc(100vh - 48px);
+    padding-top: .5rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+/* Content Sections */
+.content-section {
+    display: none;
+    padding: 2rem 0;
+}
+
+.content-section.active {
+    display: block;
+}
+
+/* Chat Section */
+.chat-container {
+    height: 60vh;
+    overflow-y: auto;
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+/* Message Styles */
+.message {
+    margin-bottom: 1rem;
+    max-width: 75%;
+}
+
+.message.user {
+    margin-left: auto;
+}
+
+.message.ai {
+    margin-right: auto;
+}
+
+.message .card {
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Study Planner */
+.fc-event {
+    cursor: pointer;
+    padding: 0.2rem 0.5rem;
+}
+
+.priority-high {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+}
+
+.priority-medium {
+    background-color: #ffc107 !important;
+    border-color: #ffc107 !important;
+}
+
+.priority-low {
+    background-color: #28a745 !important;
+    border-color: #28a745 !important;
+}
+
+/* Flashcards */
+.flashcard {
+    perspective: 1000px;
+    height: 200px;
+    cursor: pointer;
+}
+
+.flashcard-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+}
+
+.flashcard.flipped .flashcard-inner {
+    transform: rotateY(180deg);
+}
+
+.flashcard-front,
+.flashcard-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.flashcard-back {
+    transform: rotateY(180deg);
+    background-color: #f8f9fa;
+}
+
+/* Notes */
+.note-card {
+    transition: transform 0.2s;
+}
+
+.note-card:hover {
+    transform: translateY(-5px);
+}
+
+.note-category {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+/* Practice Problems */
+.problem-card {
+    border-left: 4px solid transparent;
+}
+
+.problem-card.easy {
+    border-left-color: #28a745;
+}
+
+.problem-card.medium {
+    border-left-color: #ffc107;
+}
+
+.problem-card.hard {
+    border-left-color: #dc3545;
+}
+
+/* Progress Section */
+.progress-card {
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.progress-icon {
+    font-size: 2rem;
+    opacity: 0.1;
+    position: absolute;
+    right: 1rem;
+    bottom: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .sidebar {
+        position: static;
+        height: auto;
+        padding-top: 0;
+    }
+    
+    .sidebar-sticky {
+        height: auto;
+    }
+    
+    main {
+        margin-left: 0 !important;
+    }
+    
+    .message {
+        max-width: 90%;
+    }
+    
+    .flashcard {
+        height: 150px;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.content-section.active {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Cards */
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+    background-color: transparent;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 1rem 1.25rem;
+}
+
+/* Progress Cards */
+.progress-card {
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+}
+
+.progress-card h5 {
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.progress {
+    height: 10px;
+    border-radius: 5px;
+}
+
+/* Chat Section */
+.chat-container {
+    height: 500px;
+    overflow-y: auto;
+    padding: 1rem;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.message {
+    margin-bottom: 1rem;
+    max-width: 80%;
+}
+
+.message.user {
+    margin-left: auto;
+}
+
+.message-content {
+    padding: 1rem;
+    border-radius: 15px;
+}
+
+.user .message-content {
+    background-color: #007bff;
+    color: white;
+}
+
+.ai .message-content {
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+/* Forms */
+.form-control {
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+}
+
+.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Buttons */
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    font-weight: 500;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.spinner-border {
+    color: var(--primary-color);
+    width: 3rem;
+    height: 3rem;
+}
+
+/* File Upload */
+.upload-preview {
+    margin-top: 1rem;
+    padding: 0.5rem;
+    border-radius: var(--border-radius);
+    background: var(--bg-secondary);
+}
+
+.file-attachment {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background: white;
+    border-radius: 2rem;
+    box-shadow: var(--shadow-sm);
+    margin-right: 0.5rem;
+}
+
+.remove-attachment {
+    margin-left: 0.5rem;
+    cursor: pointer;
+    color: var(--danger-color);
+    transition: var(--transition);
+}
+
+.remove-attachment:hover {
+    transform: scale(1.2);
+}
+
+/* Quiz and Flashcard Styles */
+.quiz-card,
+.flashcard {
+    perspective: 1000px;
+    height: 200px;
+}
+
+.flashcard-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+}
+
+.flashcard.flipped .flashcard-inner {
+    transform: rotateY(180deg);
+}
+
+.flashcard-front,
+.flashcard-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.flashcard-back {
+    transform: rotateY(180deg);
+    background: var(--secondary-color);
+    color: white;
+}
+
+/* Mind Map */
+.mind-map-container {
+    width: 100%;
+    height: 600px;
+    background: var(--bg-primary);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-primary: #1A202C;
+        --bg-secondary: #2D3748;
+        --text-primary: #E2E8F0;
+        --text-secondary: #A0AEC0;
+    }
+    
+    .chat-input-container input {
+        color: var(--text-primary);
+    }
+    
+    .file-attachment {
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+    }
+}
+.thinking-animation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: #555;
+}
+
+.thinking-animation .dots {
+    margin-left: 5px;
+    display: inline-block;
+}
+
+.thinking-animation .dot {
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 20% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}

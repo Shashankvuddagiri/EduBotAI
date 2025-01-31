@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduBotAI - Your AI Learning Assistant</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --gradient-start: #6366f1;
+            --gradient-end: #8b5cf6;
+            --text-color: #ffffff;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: var(--text-color);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-content {
+            max-width: 600px;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .lead {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+
+        .get-started-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 0.75rem 2rem;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .get-started-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            color: white;
+        }
+
+        .features-list {
+            margin-top: 4rem;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .feature-icon {
+            font-size: 1.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            width: 3rem;
+            height: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 1rem;
+        }
+
+        .feature-text h4 {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .feature-text p {
+            margin: 0.25rem 0 0;
+            opacity: 0.8;
+            font-size: 0.95rem;
+        }
+
+        /* Name Modal Styles */
+        .modal-content {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            border: none;
+            border-radius: 1rem;
+        }
+
+        .modal-header {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-header .btn-close {
+            filter: brightness(0) invert(1);
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-header .btn-close:hover {
+            opacity: 1;
+        }
+
+        .name-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .name-input:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .name-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .error-message {
+            color: #fecaca;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="hero-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="hero-content">
+                        <h1>Welcome to EduBotAI</h1>
+                        <p class="lead">Your personal AI powered learning assistant that helps you master any subject with ease.</p>
+                        <button class="get-started-btn" data-bs-toggle="modal" data-bs-target="#nameModal">
+                            Get Started <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="features-list">
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div class="feature-text">
+                                <h4>AI Chat Assistant</h4>
+                                <p>Get instant answers to your questions</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div class="feature-text">
+                                <h4>Smart Study Planner</h4>
+                                <p>Personalized study schedules</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <i class="fas fa-book-reader"></i>
+                            </div>
+                            <div class="feature-text">
+                                <h4>Interactive Learning</h4>
+                                <p>Quizzes, flashcards, and more</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="feature-text">
+                                <h4>Progress Tracking</h4>
+                                <p>Monitor your learning journey</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Name Input Modal -->
+    <div class="modal fade" id="nameModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fs-4">Welcome to EduBotAI!</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center p-5">
+                    <i class="fas fa-user-circle fa-4x mb-4"></i>
+                    <h4 class="mb-4">What's your name?</h4>
+                    <form id="nameForm" method="POST" action="/set_username">
+                        <input type="text" id="nameInput" name="username" class="form-control name-input" placeholder="Enter your name" required>
+                        <div class="error-message" id="nameError" style="display: none;">Please enter your name to continue</div>
+                        <button type="submit" class="get-started-btn w-100 mt-4" id="startLearningBtn">
+                            Start Learning <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const getStartedBtn = document.querySelector('.get-started-btn');
+            const nameModal = new bootstrap.Modal(document.getElementById('nameModal'));
+            const nameForm = document.getElementById('nameForm');
+            const nameInput = document.getElementById('nameInput');
+            const nameError = document.getElementById('nameError');
+
+            // Show modal when Get Started is clicked
+            getStartedBtn.addEventListener('click', function() {
+                nameModal.show();
+            });
+
+            // Handle form submission
+            nameForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                if (!nameInput.value.trim()) {
+                    nameError.style.display = 'block';
+                    return;
+                }
+                
+                nameError.style.display = 'none';
+                
+                // Submit form using fetch
+                fetch('/set_username', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'username=' + encodeURIComponent(nameInput.value)
+                })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.href = '/dashboard';
+                    } else {
+                        nameError.textContent = 'Error saving name. Please try again.';
+                        nameError.style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    nameError.textContent = 'Error saving name. Please try again.';
+                    nameError.style.display = 'block';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

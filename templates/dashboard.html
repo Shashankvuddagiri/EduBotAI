@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduBotAI Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.css' rel='stylesheet' />
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --background-color: #f8fafc;
+            --chat-bg: #ffffff;
+            --user-message-bg: #2563eb;
+            --ai-message-bg: #f1f5f9;
+            --error-color: #ef4444;
+        }
+
+        body {
+            background-color: var(--background-color);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px;
+            background: var(--chat-bg);
+            padding: 1.5rem;
+            border-right: 1px solid #e2e8f0;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.05);
+        }
+
+        .user-info {
+            text-align: center;
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-link {
+            padding: 0.75rem 1rem;
+            color: #64748b;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: #f1f5f9;
+            color: var(--primary-color);
+        }
+
+        .nav-link i {
+            width: 1.5rem;
+            text-align: center;
+            margin-right: 0.75rem;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            background: var(--background-color);
+        }
+
+        /* Chat Styles */
+        .chat-container {
+            height: calc(100vh - 4rem);
+            display: flex;
+            flex-direction: column;
+            background: var(--chat-bg);
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .chat-header {
+            padding: 1rem 1.5rem;
+            background: var(--chat-bg);
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .message {
+            display: flex;
+            align-items: flex-start;
+            max-width: 80%;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-message {
+            margin-left: auto;
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            margin: 0 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f1f5f9;
+            color: var(--primary-color);
+        }
+
+        .message-content {
+            padding: 1rem 1.25rem;
+            border-radius: 1rem;
+            position: relative;
+        }
+
+        .user-message .message-content {
+            background: var(--primary-color);
+            color: white;
+            border-bottom-right-radius: 0.25rem;
+        }
+
+        .ai-message .message-content {
+            background: var(--ai-message-bg);
+            color: #1e293b;
+            border-bottom-left-radius: 0.25rem;
+        }
+
+        .chat-input-container {
+            padding: 1.5rem;
+            background: var(--chat-bg);
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .chat-input-wrapper {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+
+        .send-button {
+            padding: 0.75rem 1.5rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .send-button:hover {
+            background: var(--secondary-color);
+        }
+
+        .file-upload-button {
+            padding: 0.75rem;
+            background: #f1f5f9;
+            border: none;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-upload-button:hover {
+            background: #e2e8f0;
+        }
+
+        /* Section Styles */
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        /* Learning Sections Styles */
+        .learning-section {
+            background: var(--chat-bg);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .task-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .task-item {
+            background: rgba(255, 255, 255, 0.5);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .task-info {
+            flex: 1;
+        }
+
+        .task-date {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        .flashcard {
+            perspective: 1000px;
+            width: 100%;
+            height: 200px;
+            margin-bottom: 1rem;
+        }
+
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+
+        .flashcard.flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .flashcard-back {
+            transform: rotateY(180deg);
+            background: #f8fafc;
+        }
+
+        .quiz-section {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .quiz-question {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .quiz-options {
+            display: grid;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .quiz-option {
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-option:hover {
+            background: #f1f5f9;
+        }
+
+        .quiz-option.correct {
+            border-color: #10b981;
+            background: #d1fae5;
+        }
+
+        .quiz-option.incorrect {
+            border-color: #ef4444;
+            background: #fee2e2;
+        }
+
+        .progress-chart {
+            width: 100%;
+            height: 300px;
+            margin-bottom: 1.5rem;
+        }
+
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .note-card {
+            background: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .note-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .note-preview {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="user-info">
+                <i class="fas fa-user-circle fa-3x text-primary mb-2"></i>
+                <h5 id="userName" class="mb-0">Welcome!</h5>
+            </div>
+            <nav class="nav flex-column">
+                <a href="#chat" class="nav-link" data-section="chat">
+                    <i class="fas fa-comments"></i> Chat with AI
+                </a>
+                <a href="#study-planner" class="nav-link" data-section="study-planner">
+                    <i class="fas fa-calendar-alt"></i> Study Planner
+                </a>
+                <a href="#quiz" class="nav-link" data-section="quiz">
+                    <i class="fas fa-question-circle"></i> Quiz
+                </a>
+                <a href="#flashcards" class="nav-link" data-section="flashcards">
+                    <i class="fas fa-clone"></i> Flashcards
+                </a>
+                <a href="#notes" class="nav-link" data-section="notes">
+                    <i class="fas fa-sticky-note"></i> Notes
+                </a>
+                <a href="#learning-path" class="nav-link" data-section="learning-path">
+                    <i class="fas fa-road"></i> Learning Path
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Chat Section -->
+            <section id="chat" class="section">
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <h4 class="mb-0"><i class="fas fa-robot text-primary me-2"></i>AI Learning Assistant</h4>
+                    </div>
+                    <div class="chat-messages" id="chatMessages">
+                        <!-- Messages will be added here -->
+                    </div>
+                    <div class="chat-input-container">
+                        <div class="chat-input-wrapper">
+                            <button class="file-upload-button" onclick="document.getElementById('fileInput').click()">
+                                <i class="fas fa-paperclip"></i>
+                            </button>
+                            <input type="text" id="messageInput" class="chat-input" placeholder="Type your message...">
+                            <button id="sendMessage" class="send-button">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                        <input type="file" id="fileInput" accept=".pdf,.png,.jpg,.jpeg" style="display: none;">
+                        <small class="text-muted mt-2 d-block">Supported files: PDF, PNG, JPG (Max 16MB)</small>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Study Planner Section -->
+            <section id="study-planner" class="section">
+                <div class="learning-section">
+                    <div class="section-header">
+                        <h4><i class="fas fa-calendar-alt text-primary me-2"></i>Study Planner</h4>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTaskModal">
+                            <i class="fas fa-plus"></i> Add Task
+                        </button>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div id="calendar"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <h5>Upcoming Tasks</h5>
+                            <ul class="task-list" id="upcomingTasks">
+                                <li class="task-item">
+                                    <div class="task-info">
+                                        <div class="fw-bold">Python Basics</div>
+                                        <div class="task-date">Today, 2:00 PM</div>
+                                    </div>
+                                    <i class="fas fa-check-circle text-success"></i>
+                                </li>
+                                <li class="task-item">
+                                    <div class="task-info">
+                                        <div class="fw-bold">Data Structures</div>
+                                        <div class="task-date">Tomorrow, 10:00 AM</div>
+                                    </div>
+                                    <i class="fas fa-clock text-warning"></i>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section id="quiz" class="section">
+                <div class="learning-section quiz-section">
+                    <div class="section-header">
+                        <h4><i class="fas fa-question-circle text-primary me-2"></i>Quiz</h4>
+                        <div>
+                            <select class="form-select" id="quizTopic">
+                                <option>Python Programming</option>
+                                <option>Data Structures</option>
+                                <option>Algorithms</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="quiz-question">
+                        <h5>What is the output of print(type([]))?</h5>
+                        <div class="quiz-options">
+                            <div class="quiz-option"><class 'list'></div>
+                            <div class="quiz-option"><class 'array'></div>
+                            <div class="quiz-option"><class 'tuple'></div>
+                            <div class="quiz-option"><class 'set'></div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>Time Left: <span id="quizTimer">02:30</span></div>
+                        <button class="btn btn-primary">Next Question</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Flashcards Section -->
+            <section id="flashcards" class="section">
+                <div class="learning-section">
+                    <div class="section-header">
+                        <h4><i class="fas fa-clone text-primary me-2"></i>Flashcards</h4>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addFlashcardModal">
+                            <i class="fas fa-plus"></i> Create Flashcard
+                        </button>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="flashcard">
+                                <div class="flashcard-inner">
+                                    <div class="flashcard-front">
+                                        <h5>What is a Python List?</h5>
+                                    </div>
+                                    <div class="flashcard-back">
+                                        <p>A list is an ordered sequence of elements that can be changed. It is created using square brackets [].</p>
+                                        <small class="text-muted">Mnemonic: "Lists are like a line of people - ordered and changeable!"</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Notes Section -->
+            <section id="notes" class="section">
+                <div class="learning-section">
+                    <div class="section-header">
+                        <h4><i class="fas fa-sticky-note text-primary me-2"></i>Notes</h4>
+                        <div>
+                            <button class="btn btn-outline-primary me-2" onclick="document.getElementById('noteUpload').click()">
+                                <i class="fas fa-upload"></i> Upload
+                            </button>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addNoteModal">
+                                <i class="fas fa-plus"></i> New Note
+                            </button>
+                        </div>
+                    </div>
+                    <input type="file" id="noteUpload" accept=".pdf,.png,.jpg" style="display: none;">
+                    <div class="notes-grid">
+                        <div class="note-card">
+                            <div class="note-title">Python Functions</div>
+                            <div class="note-preview">Key concepts: def keyword, parameters, return values...</div>
+                        </div>
+                        <div class="note-card">
+                            <div class="note-title">Data Types</div>
+                            <div class="note-preview">Numbers, strings, lists, tuples, dictionaries...</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Learning Path Section -->
+            <section id="learning-path" class="section">
+                <div class="learning-section">
+                    <div class="section-header">
+                        <h4><i class="fas fa-road text-primary me-2"></i>Learning Path</h4>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="progress-chart" id="skillChart">
+                                <!-- Chart will be rendered here -->
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <h5>Recommended Next Steps</h5>
+                            <ul class="list-group">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Advanced Python Concepts
+                                    <span class="badge bg-primary rounded-pill">Next</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Database Integration
+                                    <span class="badge bg-secondary rounded-pill">Soon</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Add Task Modal -->
+    <div class="modal fade" id="addTaskModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Study Task</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addTaskForm">
+                        <div class="mb-3">
+                            <label class="form-label">Topic</label>
+                            <input type="text" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Date</label>
+                            <input type="date" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Time</label>
+                            <input type="time" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Duration (minutes)</label>
+                            <input type="number" class="form-control" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary">Add Task</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Flashcard Modal -->
+    <div class="modal fade" id="addFlashcardModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create Flashcard</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addFlashcardForm">
+                        <div class="mb-3">
+                            <label class="form-label">Topic</label>
+                            <input type="text" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Front (Question)</label>
+                            <textarea class="form-control" rows="3" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Back (Answer)</label>
+                            <textarea class="form-control" rows="3" required></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary">Create</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Note Modal -->
+    <div class="modal fade" id="addNoteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Note</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addNoteForm">
+                        <div class="mb-3">
+                            <label class="form-label">Title</label>
+                            <input type="text" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Content</label>
+                            <textarea class="form-control" rows="5" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tags</label>
+                            <input type="text" class="form-control" placeholder="Separate with commas">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary">Save Note</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/static/js/dashboard.js"></script>
+</body>
+</html>
